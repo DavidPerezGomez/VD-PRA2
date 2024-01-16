@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+
+<head>
+    <link rel="stylesheet" href="styles/styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css"
+        integrity="sha384-q94+BZtLrkL1/ohfjR8c6L+A6qzNH9R2hBLwyoAfu3i/WCvQjzL2RQJ3uNHDISdU" crossorigin="anonymous">
+
+    <script>var exports = {};</script>
+    <script src="https://www.unpkg.com/jquery@3.7.1/dist/jquery.js"></script>
+    <script src="https://unpkg.com/underscore@1.13.6/underscore-umd-min.js"></script>
+    <script src="https://unpkg.com/@chrisoakman/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"
+        integrity="sha384-8Vi8VHwn3vjQ9eUHUxex3JSN/NFqUg3QbPyX8kWyb93+8AC/pPWTzj+nHtbC5bxD"
+        crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/chess.js@1.0.0-beta.7/dist/cjs/chess.js"></script>
+    <script src="https://unpkg.com/d3@7.8.5/dist/d3.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js"></script>
+</head>
+
+<body>
+    <div id="loadingWidgetMain" class="loadingWidget loading">
+        <svg height="100%" width="100%">
+            <svg x="50%" y="50%" height="200" width="200" transform="translate(-100, -150)">
+                <mask id="maskMain">
+                    <rect fill="white" height="200" width="200" />
+                    <polygon fill="black" points="100,0 200,0 200,200 100,200">
+                    </polygon>
+                </mask>
+                <g>
+                    <image id="loadingImgMainWhite" href="./img/chesspieces/wikipedia/bP.png" height="100%" width="100%"
+                        transform="translate(2,0)" />
+                    <image id="loadingImgMainBlack" href="./img/chesspieces/wikipedia/wP.png" mask="url(#maskMain)"
+                        height="100%" width="100%" transform="translate(2,0)" />
+                </g>
+            </svg>
+            <text x="50%" y="50%" transform="translate(0, 50)" dominant-baseline="middle" text-anchor="middle"
+                pointer-events="none">...Cargando...</text>
+        </svg>
+    </div>
+
+    <div id="mainContent" class="hidden">
+
+        <h1>Introducción</h1>
+        <div>
+            <p>
+                En esta visualización se analizan todas las partidas de ajedrez jugadas en la plataforma online <a
+                    href="https://lichess.org/">lichess.org</a> durante enero y febrero de 2015.
+            </p>
+        </div>
+
+        <h1>Puntuaciones</h1>
+        <div>
+            <p>
+                El sistema de <it>rankings</it> <a href="https://www.chess.com/terms/elo-rating-chess">Elo</a> se utiliza para estimar el resultado de una partida en función de la
+                calificación de ambos jugadores. El valor que se obtiene es un número entre 0 y 1 que representa la
+                puntuación media de un número infinito de partidas, donde la puntuación de cada partida es 1 si ganan
+                las blancas, 0 si ganan las negras, y 0.5 en caso de tablas.
+            </p>
+            <p>
+                Lichess <a href="https://lichess.org/page/rating-systems">no utiliza el sistema Elo tradicional</a> para
+                calificar a sus jugadores, sino una variación conocida como <a
+                    href="http://www.glicko.net/glicko/glicko2.pdf">Glicko-2</a>. Este sistema funciona de forma similar
+                a Elo pero tiene en cuenta la volatilidad en la habilidad de los jugadores para obtener predicciones más
+                precisas.
+            </p>
+        </div>
+
+        <div id="scoreBlock" class="rowBlock">
+            <div>
+                <p>
+                    La línea gris del gráfico muestra la puntuación esperada según el sistema Elo tradicional respecto a
+                    la
+                    diferencia en Elo de los jugadores (Elo blancas - Elo negras). Los puntos muestran la puntuación
+                    media observada en las partidas.
+                </p>
+                <p>
+                    La desigualdad entre los valores teóricos y los observados permite ver en práctica la diferencia
+                    entre Elo y Glicko-2. Además, la curva de valores reales no es perfectamente simétrica, sino que
+                    favorece levemente al jugador de las blancas (pequeño desplazamiento hacia arriba). Esto corrobora
+                    el <a href="https://en.wikipedia.org/wiki/First-move_advantage_in_chess">consenso de ventaja del
+                        primer movimiento</a>, según el cual el jugador que comienza la partida tiene una leve ventaja.
+                </p>
+            </div>
+            <div id="scorePlot" class="plot"></div>
+        </div>
+
+        <h1>Aperturas</h1>
+        <div>
+            <p>
+                La <i>Encyclopaedia of Chess Openings</i> categoriza las distintas aperturas de ajedrez en una
+                serie de <a href="https://www.365chess.com/eco.php">códigos ECO</a>. Estos se agrupan en cinco
+                volúmenes (<b>A</b>-<b>E</b>), cada uno con cien aperturas y variaciones individuales
+                (<b>A00</b>-<b>A99</b>).
+            </p>
+        </div>
+        <div id="openingsBlock" class="rowBlock">
+            <div id="openingsPlot" class="plot"></div>
+            <div>
+                <ul>
+                    <li>
+                        <b>A</b>: Aperturas de flanco, centradas en uno de los laterales del tablero. Normalmente
+                        empiezan sin los dos peones centrales.
+                    </li>
+                    <li>
+                        <b>B</b>: Aperturas con el peón del rey blanco (1.e4) en las que las negras rompen la simetría
+                        jugando algo distinto.
+                    </li>
+                    <li>
+                        <b>C</b>: Aperturas con ambos peones del rey (1.e4 e5 ó 1.e4 e6).
+                    </li>
+                    <li>
+                        <b>D</b>: Aperturas con ambos peones de la dama (1.d4 d5).
+                    </li>
+                    <li>
+                        <b>E</b>: Aperturas con el peón de la dama blanco y el caballo del rey negro (1.d4 Nf6).
+                    </li>
+                </ul>
+
+                <div class="rowBlock centered">
+                    <span>Elo</span>
+                    <input id="openingsRange" type="range" min="1" max="100" step="100" value="50" class="slider">
+                    <span id="openingsRangeValue"></span>
+                </div>
+
+                <p>
+                    La aperturas básicas de Juego Abierto y Defensa Francesa, <b>C</b>, son las más comunes en niveles
+                    bajos e intermedios de juego, pero a medida que aumenta el nivel de juego van perdiendo popularidad
+                    poco a poco y a favor de las
+                    aperturas más irregulares de tipo <b>A</b> y <b>B</b>. Aún así se mantiene como la categoría más
+                    estable a lo largo de todo el espectro en cuanto a puntuación.
+                </p>
+                <p>
+                    A niveles medios y altos de juego, <b>B</b> tiende a favorecer a las piezas negras más de lo normal
+                    y
+                    <b>A</b>, a las blancas. Esto es congruente con el hecho de que, a menudo, son las blancas quienes
+                    toman la
+                    decisión de jugar una apertura de flanco (<b>A</b>), y las negras quienes fuerzan un Juego
+                    Semi-Abierto (<b>B</b>) en respuesta a una propuesta de Juego Abierto (<b>C</b>).
+                </p>
+            </div>
+        </div>
+        <div>
+            <p>
+                Se ve también como, en general, todos los tipos de apertura favorecen a las blancas, reflejando de
+                nuevo como jugar primero proporciona una ventaja inherente.
+            </p>
+        </div>
+
+        <h1>Finales de Partida</h1>
+
+        <div>
+            <p>Una partida de ajedrez puede terminar de cuatro formas:</p>
+            <ol>
+                <li>Jaque mate: Uno de los jugadores gana la partida por jaque mate.</li>
+                <li>Tablas: Por una de entre varias razones, los jugadores empatan la partida.</li>
+                <li>Renuncia: Uno de los jugadores abandona y pierde la partida.</li>
+                <li>Por tiempo: Uno de los jugadores se queda sin tiempo disponible y pierde la partida.</li>
+            </ol>
+            <p>
+                A efectos prácticos, una victoria por jaque mate o por renuncia del oponentes son básicamente
+                intercambiables: la mayoría de las veces una renuncia estaría seguida con casi total seguridad de una
+                derrota si se hubiera continuado la partida. Aún así, puede ser interesante mostrarlas por separado, ya
+                que representan una diferencia en la actitud de los jugadores.
+            </p>
+            <p>
+                En la gráfica, el aspecto más notable es la considerable reducción de juegos que terminan en la forma
+                "tradicional" de jaque mate a medida que aumenta la calificación de los jugadores. En su lugar,
+                aumentando el número de partidas que son abandonadas en los niveles bajos e intermedios. En los niveles
+                más altos los abandonos son similares pero aumenta también la cantidad
+                de juegos que terminan por tiempo.
+            </p>
+            <p>
+                Por su parte, el cambio en el número de empates es más sutil, pero se puede apreciar una definitiva
+                tendencia ascendente que se vuelve más clara a partir de 2100-2022 Elo, en los niveles más altos de
+                juego, donde las tablas son un aspecto importante de la estrategia.
+            </p>
+        </div>
+
+        <div id="terminationBlock" class="rowBlock">
+            <div id="terminationPlot" class="plot"></div>
+        </div>
+
+        <h1>Duración</h1>
+
+
+        <div id="movesBlock" class="rowBlock">
+            <div id="movesPlot" class="plot"></div>
+            <div>
+                <p>
+                    El número de turnos que duran las partidas también se ve afectado por el nivel de juego. Con una nube de puntos no es fácil detectar un patrón, pero al aplicar una regresión líneal a los datos, aparece claramente una tendencia creciente en la duración de las partidas respecto de Elo de los jugadores.
+                </p>
+            </div>
+        </div>
+
+        <h1>Buscador de Partidas</h1>
+
+        <div>
+            <p>
+                Por último, se presenta un buscador de partidas que muestra la distribución de resultados de todas las
+                partidas con comienzo idéntico al introducido. Los movimientos deben introducirse con <a
+                    href="https://en.wikipedia.org/wiki/Algebraic_notation_(chess)">notación algebráica</a>, aunque
+                pueden
+                omitirse los números indicadores de turno ("1.", "2.", etc.) y los indicadores de jaque ("+") y mate
+                ("#").
+            </p>
+        </div>
+
+        <div id="loadingWidgetMoves" class="loadingWidget">
+            <svg height="400" width="100%">
+                <svg x="50%" y="50%" height="100" width="100" transform="translate(-50, -50)">
+                    <mask id="maskMoves">
+                        <rect fill="white" height="100" width="100" />
+                        <polygon fill="black" points="50,0 100,0 100,100 50,100">
+                            <animateTransform id="animMask" attributeName="transform" attributeType="XML" type="rotate"
+                                from="0 50 50" to="360 50 50" dur="3s" repeatCount="indefinite" />
+                        </polygon>
+                    </mask>
+                    <g>
+                        <image id="loadingImgMovesWhite" href="./img/chesspieces/wikipedia/bP.png" height="100%"
+                            width="100%" transform="translate(2,0)" />
+                        <image id="loadingImgMovesBlack" href="./img/chesspieces/wikipedia/wP.png"
+                            mask="url(#maskMoves)" height="100%" width="100%" transform="translate(2,0)" />
+                        <animateTransform id="animImg" attributeName="transform" attributeType="XML" type="rotate"
+                            from="0 50 50" to="-360 50 50" dur="3s" begin="3s;imgMask.end+3s" />
+                    </g>
+                </svg>
+                <text x="50%" y="50%" transform="translate(0, 50)" dominant-baseline="middle" text-anchor="middle"
+                    pointer-events="none">...Cargando...</text>
+            </svg>
+        </div>
+
+        <div id="gameSearchBlock" class="rowBlock hidden">
+            <div class="colBlock">
+                <input id="inputMoves" type="text" placeholder="e4 e5 Ng3 Nc6 Bf4">
+                <button id="btnSearch">Buscar</button>
+                <div id="gamesPercent">
+                </div>
+                <div id="gameSearchPlot" class="plot"></div>
+                <div>
+                    Ejemplos de aperturas:
+                    <ul id="openingsList">
+                        <li value="1.e4 e5 2.Nf3 Nc6 3.Bb5"><span>Ruy López</span></li>
+                        <li value="1.d4 Nf6 2.c4 e6 3.Nc3 Bb4"><span>Defensa Nimzo-India</span></li>
+                        <li value="1.d4 Nf6 2.c4 g6 3.Nc3 d5"><span>Defensa Grünfeld</span></li>
+                        <li value="1.e4 c5 2.Nf3 d6 3.d4 cxd4 4.Nxd4 Nf6 5.Nc3 g6"><span>Dragón Siciliano</span></li>
+                        <li value="1.e4 e5 2.Qh5 Nc6 3.Bc4 Nf6 4.Qxf7#"><span>Mate del pastor</span></li>
+                        <li value="1.Na3"><span>Sodium Attack</span></li>
+                        <li value="1.Nh3"><span>Ammonia Opening</span></li>
+                        <li value="1.e4 e5 2.Ke2"><span>Bongcloud Attack</span></li>
+                    </ul>
+                </div>
+            </div>
+            <div id="board" class="chessboard"></div>
+        </div>
+
+        <div class="ack">
+            Creado usando
+            <ul>
+                <li><a href="https://github.com/jhlywa/chess.js/">chess.js</a> - Copyright © 2023, Jeff Hlywa
+                    (jhlywa@gmail.com)</li>
+                <li><a href="https://github.com/oakmac/chessboardjs">chessboardjs</a> - Copyright © 2019, Chris Oakman
+                </li>
+                <li><a href="https://github.com/susielu/d3-legend">d3-legend</a> - Copyright © 2015, Susie Lu</li>
+                <li><a href="https://d3js.org/">D3</a> - Copyright © 2010-2023, Mike Bostock</li>
+            </ul>
+            Datos
+            <ul>
+                <li><a href="https://database.lichess.org/">lichess.org open database</a></li>
+                <ul>
+                    <li>2015 - January</li>
+                    <li>2015 - February</li>
+                </ul>
+            </ul>
+        </div>
+    </div>
+
+
+    <!-- JAVASCRIPT -->
+    <script type="module" src="js/main_module.js"></script>
+</body>
