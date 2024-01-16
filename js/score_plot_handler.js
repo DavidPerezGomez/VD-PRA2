@@ -82,8 +82,8 @@ export class ScoreVizHandler extends BaseVisulizationHandler {
         this._createYAxis(this._yScale);
 
         // labels
-        this._createXAxisLabel("Diferencia en Elo (Blancas - Negras)");
-        this._createYAxisLabelRotated("Puntuación");
+        this._createXAxisLabel("Diferencia en Elo (Blancas - Negras)", 35);
+        this._createYAxisLabelRotated("Puntuación", 35);
     }
 
     updatePlot() {

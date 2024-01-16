@@ -110,8 +110,8 @@ function createTerminationPlot() {
         plotMargin: {
             top: 10,
             right: 110,
-            bottom: 500 * 0.15,
-            left: 700 * 0.1,
+            bottom: 40,
+            left: 80,
         },
         colors: {
             background: terminationStyle.getPropertyValue("--color-background"),
@@ -143,8 +143,8 @@ function createMovesPlot() {
         plotMargin: {
             top: 10,
             right: 20,
-            bottom: 500 * 0.15,
-            left: 700 * 0.1,
+            bottom: 40,
+            left: 60,
         },
         colors: {
             background: movesStyle.getPropertyValue("--color-background"),
@@ -165,13 +165,13 @@ function createScorePlot() {
     const scoreStyle = window.getComputedStyle($("#scoreBlock")[0]);
 
     const scorePlotOptions = {
-        plotWidth: 700,
+        plotWidth: 650,
         plotHeight: 500,
         plotMargin: {
             top: 10,
-            right: 20,
-            bottom: 500 * 0.15,
-            left: 700 * 0.1,
+            right: 0,
+            bottom: 40,
+            left: 70,
         },
         colors: {
             background: scoreStyle.getPropertyValue("--board-dark"),
@@ -206,6 +206,7 @@ function createOpeningsPlot() {
             circles: openingsStyle.getPropertyValue("--color-circles"),
             text: openingsStyle.getPropertyValue("--color-text"),
         },
+        circleSizeRange: [20, 20],
         bracketSize: 50,
         minCount: 200,
     };

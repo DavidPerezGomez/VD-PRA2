@@ -84,8 +84,8 @@ export class MovesVizHandler extends BaseVisulizationHandler {
         this._createYAxis(this._yScale);
 
         // labels
-        this._createXAxisLabel("Elo");
-        this._createYAxisLabelRotated("Nº movimientos");
+        this._createXAxisLabel("Elo", 35);
+        this._createYAxisLabelRotated("Nº movimientos", 45);
     }
 
     updatePlot() {

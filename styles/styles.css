@@ -136,8 +136,13 @@ h1 {
     align-items: center;
 }
 
-.centered {
-    justify-content: center;
+.left {
+    justify-content: left;
+}
+
+.highlighted {
+    padding: 5px 5px;
+    background-color: var(--board-dark);
 }
 
 .plot {
@@ -196,7 +201,7 @@ li {
 }
 
 .tooltip {
-    text-align: center;
+    text-align: left;
     padding: 5px;
     background: #fff;
     border: 1px solid #313639;

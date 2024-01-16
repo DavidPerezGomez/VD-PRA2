@@ -140,7 +140,7 @@ export class GameSearchVizHandler extends BaseVisulizationHandler {
             }
         });
 
-        this._data = new d3.InternMap(d3.sort(this._data, d =>-d[0]));
+        this._data = new d3.InternMap(d3.sort(this._data, d => -d[0]));
 
         this._stacks = d3.stack()
             .keys(GameSearchVizHandler.KEYS)
@@ -224,7 +224,19 @@ export class GameSearchVizHandler extends BaseVisulizationHandler {
     _mouseover = (evt, d) => {
         var rect = d3.select(evt.target);
         var key = d.key;
-        var text = `${key}: ${this._data.get(key).games}`;
+        var result;
+        switch (d.key) {
+            case 1:
+                result = "1-0";
+                break;
+            case 0:
+                result = "0-1";
+                break;
+            case 0.5:
+                result = "1/2-1/2";
+                break;
+        }
+        var text = `Resultado: ${result}<br>Partidas: ${this._data.get(key).games}`;
 
         rect.transition()
             .duration(50)

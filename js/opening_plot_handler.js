@@ -183,6 +183,7 @@ export class OpeningVizHandler extends BaseVisulizationHandler {
                 enter => enter.append("circle")
                     .attr("cx", d => this._xScale(d[1].percent))
                     .attr("cy", d => this._yScale(d[1].score))
+                    // .attr("r", d => this._sizeScale(d[1].count))
                     .attr("r", d => this._sizeScale(d[1].count))
                     .attr("fill", this._options.colors.circles)
                     .attr("opacity", 0.5)
@@ -223,7 +224,7 @@ export class OpeningVizHandler extends BaseVisulizationHandler {
     // mouse events
     _mouseover = (evt, [key, opening]) => {
         var circle = d3.select(evt.target);
-        var text = opening.percent;
+        var text = `Porcentaje: ${(opening.percent * 100).toFixed(2)}%<br>Puntuación: ${opening.score.toFixed(2)}`;
 
         circle.transition()
             .duration(50)

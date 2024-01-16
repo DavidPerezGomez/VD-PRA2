@@ -42,7 +42,7 @@
         <h1>Introducción</h1>
         <div>
             <p>
-                En esta visualización se analizan todas las partidas de ajedrez jugadas en la plataforma online <a
+                En esta visualización se analizan 500000 partidas de ajedrez jugadas en la plataforma online <a
                     href="https://lichess.org/">lichess.org</a> durante enero y febrero de 2015.
             </p>
         </div>
@@ -50,7 +50,8 @@
         <h1>Puntuaciones</h1>
         <div>
             <p>
-                El sistema de <it>rankings</it> <a href="https://www.chess.com/terms/elo-rating-chess">Elo</a> se utiliza para estimar el resultado de una partida en función de la
+                El sistema de <it>rankings</it> <a href="https://www.chess.com/terms/elo-rating-chess">Elo</a> se
+                utiliza para estimar el resultado de una partida en función de la
                 calificación de ambos jugadores. El valor que se obtiene es un número entre 0 y 1 que representa la
                 puntuación media de un número infinito de partidas, donde la puntuación de cada partida es 1 si ganan
                 las blancas, 0 si ganan las negras, y 0.5 en caso de tablas.
@@ -67,8 +68,7 @@
         <div id="scoreBlock" class="rowBlock">
             <div>
                 <p>
-                    La línea gris del gráfico muestra la puntuación esperada según el sistema Elo tradicional respecto a
-                    la
+                    La línea gris del gráfico muestra la puntuación esperada de acuerdo al sistema Elo tradicional según la
                     diferencia en Elo de los jugadores (Elo blancas - Elo negras). Los puntos muestran la puntuación
                     media observada en las partidas.
                 </p>
@@ -115,7 +115,7 @@
                     </li>
                 </ul>
 
-                <div class="rowBlock centered">
+                <div class="rowBlock highlighted left">
                     <span>Elo</span>
                     <input id="openingsRange" type="range" min="1" max="100" step="100" value="50" class="slider">
                     <span id="openingsRangeValue"></span>
@@ -141,7 +141,7 @@
         <div>
             <p>
                 Se ve también como, en general, todos los tipos de apertura favorecen a las blancas, reflejando de
-                nuevo como jugar primero proporciona una ventaja inherente.
+                nuevo como jugar primero proporciona una pequeña ventaja inherente.
             </p>
         </div>
 
@@ -161,21 +161,25 @@
                 derrota si se hubiera continuado la partida. Aún así, puede ser interesante mostrarlas por separado, ya
                 que representan una diferencia en la actitud de los jugadores.
             </p>
-            <p>
-                En la gráfica, el aspecto más notable es la considerable reducción de juegos que terminan en la forma
-                "tradicional" de jaque mate a medida que aumenta la calificación de los jugadores. En su lugar,
-                aumentando el número de partidas que son abandonadas en los niveles bajos e intermedios. En los niveles
-                más altos los abandonos son similares pero aumenta también la cantidad
-                de juegos que terminan por tiempo.
-            </p>
-            <p>
-                Por su parte, el cambio en el número de empates es más sutil, pero se puede apreciar una definitiva
-                tendencia ascendente que se vuelve más clara a partir de 2100-2022 Elo, en los niveles más altos de
-                juego, donde las tablas son un aspecto importante de la estrategia.
-            </p>
         </div>
 
         <div id="terminationBlock" class="rowBlock">
+            <div>
+                <p>
+                    En la gráfica, el aspecto más notable es la considerable reducción de juegos que terminan en la
+                    forma
+                    "tradicional" de jaque mate a medida que aumenta la calificación de los jugadores. En su lugar,
+                    aumentando el número de partidas que son abandonadas en los niveles bajos e intermedios. En los
+                    niveles
+                    más altos los abandonos son similares pero aumenta también la cantidad
+                    de juegos que terminan por tiempo.
+                </p>
+                <p>
+                    Por su parte, el cambio en el número de empates es más sutil, pero se puede apreciar una definitiva
+                    tendencia ascendente que se vuelve más clara a partir de 2100-2022 Elo, en los niveles más altos de
+                    juego, donde las tablas son un aspecto importante de la estrategia.
+                </p>
+            </div>
             <div id="terminationPlot" class="plot"></div>
         </div>
 
@@ -186,7 +190,11 @@
             <div id="movesPlot" class="plot"></div>
             <div>
                 <p>
-                    El número de turnos que duran las partidas también se ve afectado por el nivel de juego. Con una nube de puntos no es fácil detectar un patrón, pero al aplicar una regresión líneal a los datos, aparece claramente una tendencia creciente en la duración de las partidas respecto de Elo de los jugadores.
+                    El número de turnos que duran las partidas también se ve afectado por el nivel de juego. Con una
+                    nube de puntos no es fácil detectar un patrón, pero al aplicar una regresión líneal a los datos
+                    (representada por la línea blanca)
+                    aparece claramente una tendencia creciente en la duración de las partidas respecto de Elo de los
+                    jugadores.
                 </p>
             </div>
         </div>
@@ -196,7 +204,7 @@
         <div>
             <p>
                 Por último, se presenta un buscador de partidas que muestra la distribución de resultados de todas las
-                partidas con comienzo idéntico al introducido. Los movimientos deben introducirse con <a
+                partidas con el comienzo introducido. Los movimientos deben indicarse con <a
                     href="https://en.wikipedia.org/wiki/Algebraic_notation_(chess)">notación algebráica</a>, aunque
                 pueden
                 omitirse los números indicadores de turno ("1.", "2.", etc.) y los indicadores de jaque ("+") y mate

@@ -138,12 +138,12 @@ export class TerminationVizHandler extends BaseVisulizationHandler {
         this._tooltip = this._createTooltip();
 
         // axes
-        this._createXAxis(this._xScale, 20);
+        this._createXAxis(this._xScale);
         this._createYAxis(this._yScale, 10, d => d * 100 + "%");
 
         // labels
-        this._createXAxisLabel(`Elo (intervalos de ${this._options.bracketSize})`);
-        this._createYAxisLabelRotated("Porcentaje de juegos");
+        this._createXAxisLabel(`Elo (intervalos de ${this._options.bracketSize})`, 35);
+        this._createYAxisLabelRotated("Porcentaje de juegos", 45);
 
         // legend
         var legendBuilder = d3.legendColor()
@@ -200,7 +200,7 @@ export class TerminationVizHandler extends BaseVisulizationHandler {
     _mouseover = (evt, d) => {
         var outterCircle = evt.target;
         var innerCircle = d3.select(outterCircle.parentNode).select(".innerCircle");
-        var text = d.percent;
+        var text = `${(d.percent * 100).toFixed(2)}%`;
 
         innerCircle.transition()
             .duration(50)
